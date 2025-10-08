@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # API Gateway
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:8001
+      - CATALOG_SERVICE_URL=http://catalog-service:8002
+    depends_on:
+      - auth-service
+      - catalog-service
+    networks:
+      - modernshop-network
+
+  # Auth Service
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "8001:8001"  # Для тестирования напрямую
+    networks:
+      - modernshop-network
+
+  # Catalog Service
+  catalog-service:
+    build: ./catalog-service
+    ports:
+      - "8002:8002"  # Для тестирования напрямую
+    networks:
+      - modernshop-network
+
+networks:
+  modernshop-network:
+    driver: bridge
